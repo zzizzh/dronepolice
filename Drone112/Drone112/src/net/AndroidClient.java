@@ -1,0 +1,70 @@
+
+package net;
+
+import java.net.*;
+import java.io.*;
+import java.util.ArrayList;
+
+import data.*;
+import vision.FileGrabber;
+
+public class AndroidClient extends Thread
+{
+    private Socket cs;
+    private ObjectInputStream is;
+    private ObjectOutputStream os;
+    
+    public AndroidClient(Socket cs) throws IOException
+    {
+        this.cs = cs;
+        is = new ObjectInputStream(cs.getInputStream());
+        os = new ObjectOutputStream(cs.getOutputStream());
+    }
+    
+    @Override
+    public void run()
+    {
+        System.out.println("안드로이드 접속");
+        // 샘플 커맨드 리스트
+        ArrayList<Command> samplelist = new ArrayList<>();
+        samplelist.add(new Command(2, 0f, 0f));
+        
+        try
+        {
+            while(true)
+            {
+                Packet recvdata = (Packet)is.readObject();
+                
+                switch(recvdata.getFlag())
+                {
+                case 0:
+                    float location[] = {35.8872811f, 128.61074170000006f};
+                    os.writeObject(new Packet(0, location));
+                    os.writeObject(new Packet(4, FileGrabber.getInstance().getBytes()));
+                    break;
+                    
+                case 1:
+                    os.writeObject(new Packet(1, samplelist));
+                    break;
+                    
+                case 2:
+                    os.writeObject(new Packet(1, samplelist));
+                    break;
+                    
+                case 3:
+                    os.writeObject(new Packet(1, samplelist));
+                    break;
+                    
+                case 4:
+                    break;
+                    
+                case 5:
+                    os.writeObject(new Packet(5, 0));
+                }
+            }
+        }
+        catch(Exception e) { System.out.println("접속 종료"); }
+        
+        try { cs.close(); } catch(Exception e) {}
+    }
+}

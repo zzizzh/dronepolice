@@ -1,0 +1,39 @@
+[손규호] [오후 6:24] 
+0 : Query for a picture and home location
+
+1 : Query for command list and stream
+
+2 : Query for command append        data : Command ArrayList
+
+3 : Query for command reset         data : Command ArrayList
+
+
+[손규호] [오후 6:24] mflag가 0이면
+[손규호] [오후 6:24] 홈 좌표 보내는 거고
+[손규호] [오후 6:24] 1이면 커맨드 리스트
+[손규호] [오후 6:24] 2면 지금 리스트에 추가
+[손규호] [오후 6:24] 3이면 지금 리스트 다 지우고 올리기
+
+cflag
+0 : Move      value1, value2 : location
+1 : Halt      value1 : halt duration (second)
+2 : Go Home
+3 : Land
+4 : Rotate   value1 : degree (North)
+/////////////////////////////////////////////////////
+* Edison -> Uno
+
+   (byte)      (float) (float)
+0 : Move   value1, value2 : location
+1 : Halt   value1 : halt duration (second)
+2 : Go Home
+3 : Land
+10: Reset
+
+* Uno -> Edison
+
+   (byte)        (float)  (float)
+1 : GPS      latitude,longitude
+2 : 커맨드 소진
+
+커맨드를 2개까지 받는다.

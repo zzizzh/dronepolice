@@ -1,0 +1,63 @@
+
+package net;
+
+import java.net.*;
+import java.io.*;
+
+public class DroneClient extends Thread
+{
+    private Socket cs;
+    private DataInputStream is;
+    private DataOutputStream os;
+    
+    public DroneClient(Socket cs) throws IOException
+    {
+        this.cs = cs;
+        is = new DataInputStream(cs.getInputStream());
+        os = new DataOutputStream(cs.getOutputStream());
+    }
+    
+    @Override
+    public void run()
+    {
+        System.out.println("드론 접속");
+        try
+        {
+            while(true)
+            {
+                int len = is.readInt();
+                System.out.println(len);
+                byte recv = is.readByte();
+                System.out.println(recv);
+                switch(recv)
+                {
+                case 0:
+                    os.writeInt(2);
+                    os.write(1);
+                    os.write(2);
+                    break;
+                    
+                case 1:
+                    
+                    break;
+                    
+                case 4:
+                    float[] location = new float[2];
+                    location[0] = is.readFloat();
+                    location[1] = is.readFloat();
+                    System.out.println("위도 : " + location[0] + ", " + location[1]);
+                    byte[] frame = new byte[len-9];
+                    is.readFully(frame, 0, len-9);
+                    // 읽은 내용 처리 들어가야
+                    break;
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("받을 때 오류");
+        }
+        
+        try { cs.close(); } catch(Exception e) {}
+    }
+}
